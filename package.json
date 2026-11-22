@@ -1,0 +1,90 @@
+{
+  "name": "ladoo",
+  "version": "0.1.0",
+  "description": "Official TypeScript and JavaScript SDK for the Ladoo API: calls, people, agents, bookings, webhooks and more.",
+  "license": "MIT",
+  "author": "Ladoo LLC",
+  "homepage": "https://tryladoo.com/docs/developers",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TryLadoo/ladoo-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TryLadoo/ladoo-node/issues"
+  },
+  "keywords": [
+    "ladoo",
+    "ai receptionist",
+    "voice agent",
+    "webhooks",
+    "api",
+    "sdk"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./webhooks": {
+      "import": {
+        "types": "./dist/webhooks.d.ts",
+        "default": "./dist/webhooks.js"
+      },
+      "require": {
+        "types": "./dist/webhooks.d.cts",
+        "default": "./dist/webhooks.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "webhooks": [
+        "./dist/webhooks.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "generate": "node scripts/generate.mjs --fetch",
+    "generate:offline": "node scripts/generate.mjs",
+    "generate:check": "node scripts/generate.mjs --check",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json && tsc -p examples",
+    "test": "vitest run",
+    "test:live": "vitest run test/live.test.ts",
+    "prepublishOnly": "npm run build",
+    "prepare": "tsup"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.8",
+    "@hono/node-server": "^2.1.11",
+    "@types/node": "^24.0.0",
+    "hono": "^4.13.20",
+    "tsup": "8.5.1",
+    "tsx": "^4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "3.2.7"
+  }
+}

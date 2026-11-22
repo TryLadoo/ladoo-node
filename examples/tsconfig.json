@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"],
+    "paths": {
+      "ladoo": ["../src/index.ts"],
+      "ladoo/webhooks": ["../src/webhooks/index.ts"]
+    }
+  },
+  "include": ["."]
+}

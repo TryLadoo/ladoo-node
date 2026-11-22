@@ -1,0 +1,34 @@
+# Publishes to npm when a GitHub Release is published, using npm trusted
+# publishing (OIDC) with provenance. No token is stored in the repo.
+#
+# Inert until the owner sets the repository variable NPM_TRUSTED_PUBLISHING to
+# "true", after adding this workflow as a trusted publisher for the `ladoo`
+# package on npmjs.com.
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: vars.NPM_TRUSTED_PUBLISHING == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - run: npm ci
+      - run: npm test
+      - name: Check the tag matches package.json
+        run: test "v$(node -p 'require("./package.json").version')" = "${GITHUB_REF_NAME}"
+      - run: npm publish --provenance --access public

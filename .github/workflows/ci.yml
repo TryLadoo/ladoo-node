@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run generate:check
+      - run: npm run typecheck
+      - run: npm test
+      - name: Load the built package as ESM and CommonJS
+        run: |
+          node --input-type=module -e "import { Ladoo } from 'ladoo'; import { constructEvent } from 'ladoo/webhooks'; if (!Ladoo || !constructEvent) process.exit(1)"
+          node -e "const { Ladoo } = require('ladoo'); const { constructEvent } = require('ladoo/webhooks'); if (!Ladoo || !constructEvent) process.exit(1)"
